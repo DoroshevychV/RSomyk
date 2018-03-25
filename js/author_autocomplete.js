@@ -30,7 +30,7 @@ function autocomplete(inp, arr) {
         }
       }
   });
-  
+
   inp.addEventListener("keydown", function(e) {
       var x = document.getElementById(this.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");

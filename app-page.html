@@ -38,8 +38,14 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav pull-right">
                 <li>
+                    <button type="button" id="login-btn" class="login-btn" data-toggle="modal" data-target="#LoginModal"> Log In
+                    </button>
+                </li>
+                <li>
                     <h3 id="username" style="color: white;display: none"></h3>
-                    <button type="button" class="login-btn" data-toggle="modal" data-target="#LoginModal"> Log In
+                </li>
+                <li style="margin-left: 20px">
+                    <button type="button" id="out-btn" class="login-btn" style="display: none"> Log Out
                     </button>
                 </li>
             </ul>
@@ -58,7 +64,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th scope="col">№</th>
+            <th scope="col">№ID</th>
             <th scope="col">Book Name</th>
             <th scope="col">Genre</th>
             <th scope="col">Authors</th>
@@ -103,7 +109,7 @@
             <!--Quantity field-->
             <div class="btn-field">
                 <h5>Book Qty</h5>
-                <button type="button" onclick="" class="btn btn-default qty-btn">
+                <button type="button" id="quantity-button" class="btn btn-default qty-btn">
                     Quantity
                 </button>
             </div>
@@ -145,7 +151,7 @@
                     <td>
                         <form autocomplete="off">
                             <div class="autocomplete" style="width:300px;">
-                                <input id="myInput" type="text" id="add-book-author-name" name="authorName" placeholder="Author">
+                                <input id="myInput" type="text" class="add-book-author-name" name="authorName" placeholder="Author">
                             </div>
                         </form>
                     </td>
@@ -165,8 +171,8 @@
             <div class="delete-book-group">
                 <h5>Enter book ID to delete it</h5>
                 <div class="btn-group " role="group" aria-label="...">
-                    <input type="text" name="book-id" class="delete-item">
-                    <button type="button" class="btn btn-warning delete-item">DELETE BOOK</button>
+                    <input type="text" name="book-id" id="delete-book-id" class="delete-item">
+                    <button type="button" id="delete-book-button" class="btn btn-warning delete-item">DELETE BOOK</button>
                 </div>
             </div>
             <!--End of delete book-->
@@ -253,9 +259,10 @@
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 'success': function(response) {
-                    $('.login-btn').hide();
+                    $('#login-btn').hide();
                     $('#username').append(""+response.username+"")
                     $('#username').show();
+                    $('#out-btn').show();
                 },
                 'error': function(error) {
                     console.log(error);
@@ -273,7 +280,7 @@
             'success': function(response) {
 
                 for (i = 0;i<response.length;i++) {
-                    $('#authors-select-list').append("<option>"+response[i].fullName+"</option>")
+                    $('#authors-select-list').append("<option value='"+response[i].id+"'>"+response[i].fullName+"</option>")
                 }
             },
             'error': function(error) {
@@ -287,9 +294,18 @@
             'contentType': 'application/json',
             'dataType': 'json',
             'success': function(response) {
-
+                var authors;
                 for (i = 0;i<response.length;i++) {
-                    $('#books-table').append('<tr><th scope="row">'+(i+1)+'</th><td>'+response[i].bookName+'</td><td>'+response[i].genre+'</td><td>'+response[i].bookAuthor+'</td></tr>');
+                    authors = "";
+                    for (j = 0;j<response[i].bookAuthor.length;j++){
+                        if(j+1 ==  response[i].bookAuthor.length){
+                            authors += response[i].bookAuthor[j].fullName;
+                        }else{
+                            authors += response[i].bookAuthor[j].fullName+", ";
+                        }
+
+                    }
+                    $('#books-table').append('<tr><th scope="row">'+response[i].id+'</th><td>'+response[i].bookName+'</td><td>'+response[i].genre+'</td><td>'+authors+'</td></tr>');
                 }
                 $('.badge').append(response.length);
             },
@@ -324,14 +340,30 @@
     });
 
     $('#add-book-save-button').click(function() {
+
         var bookName = $('#add-book-name').val();
         var genre = $('#add-book-genre').val();
-        var bookAuthor = $('#add-book-author-name').val();
+        var bookAuthor = $('.add-book-author-name').val();
+
         var newBook = {
+            'bookAuthor': [
+                {
+                    "fullName": bookAuthor,
+                    'id': 0
+                }
+            ],
             'bookName': bookName,
+            'booksAutors': [
+                {
+                    'fullName': ''+bookAuthor+'',
+                    'id': 0
+                }
+            ],
             'genre': genre,
-            'bookAuthor': bookAuthor
+            'id': 0
         };
+
+
         $.ajax({
             'url': 'http://localhost:8080/api/private/books',
             'type': "POST",
@@ -342,13 +374,54 @@
                 'A-Token': localStorage.getItem('A-Token'),
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            'success': function(data) {
+            'success': function(response) {
                 document.location.reload();
             },
             'error': function(error) {
                 console.log(error);
             }
         });
+    });
+    $('#quantity-button').click(function() {
+        $('.badge').empty();
+        var id = $('#authors-select-list').val();
+        $.ajax({
+            'url': 'http://localhost:8080/api/authors/'+id+'',
+            'type': "GET",
+            'contentType': 'application/json',
+            'dataType': 'json',
+            'success': function(response) {
+                console.log(response);
+                $('.badge').append(JSON.parse(response));
+            },
+            'error': function(error) {
+                console.log(error);
+            }
+        });
+    });
+    $('#delete-book-button').click(function() {
+        var id = $('#delete-book-id').val();
+        console.log(id);
+        $.ajax({
+            'url': 'http://localhost:8080/api/private/books/'+id+'',
+            'type': "DELETE",
+            'contentType': 'application/json',
+            'dataType': 'json',
+            'headers': {
+                'A-Token': localStorage.getItem('A-Token'),
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            'success': function(response) {
+
+            },
+            'error': function(error) {
+                console.log(error);
+            }
+        });
+    });
+    $('#out-btn').click(function() {
+        localStorage.removeItem("A-Token");
+        location.reload();
     });
 </script>
 </html>
