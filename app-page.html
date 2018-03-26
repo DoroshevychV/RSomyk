@@ -38,7 +38,8 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav pull-right">
                 <li>
-                    <button type="button" id="login-btn" class="login-btn" data-toggle="modal" data-target="#LoginModal"> Log In
+                    <button type="button" id="login-btn" class="login-btn" data-toggle="modal"
+                            data-target="#LoginModal"> Log In
                     </button>
                 </li>
                 <li>
@@ -72,10 +73,10 @@
         </thead>
         <tbody id="books-table">
         <!--<tr>-->
-            <!--<th scope="row">1</th>-->
-            <!--<td>Веселі вихідні</td>-->
-            <!--<td>Genre here</td>-->
-            <!--<td>Ivan Pelykh</td>-->
+        <!--<th scope="row">1</th>-->
+        <!--<td>Веселі вихідні</td>-->
+        <!--<td>Genre here</td>-->
+        <!--<td>Ivan Pelykh</td>-->
 
         <!--</tr>-->
 
@@ -97,8 +98,8 @@
                 </select>
                 <!--<h5>Author name</h5>-->
                 <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"-->
-                        <!--aria-haspopup="true" aria-expanded="false">-->
-                    <!--Author name <span class="caret"></span>-->
+                <!--aria-haspopup="true" aria-expanded="false">-->
+                <!--Author name <span class="caret"></span>-->
                 <!--</button>-->
                 <!--<ul class="dropdown-menu list-group" id="authors-select-list">-->
 
@@ -141,7 +142,7 @@
                 <tr>
                     <th scope="col">Book Name</th>
                     <th scope="col">Genre</th>
-                    <th scope="col">Authors</th>
+                    <th scope="col">Add Authors</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -150,12 +151,40 @@
                     <td><input type="text" name="Genre book" id="add-book-genre" placeholder="Book Genre"></td>
                     <td>
                         <form autocomplete="off">
-                            <div class="autocomplete" style="width:300px;">
-                                <input id="myInput" type="text" class="add-book-author-name" name="authorName" placeholder="Author">
-                            </div>
+                            <!--<button type="button" id="add-author" class="btn btn-success">Save book</button>-->
+                            <h4>Add existing author</h4>
+                            <select class="form-control" id="add-author">
+
+                            </select>
+                            <button type="button" id="add-author-existing-button" class="btn btn-default qty-btn"
+                                    style="margin-top: 10px">
+                                Add to list authors
+                            </button>
+                        </form>
+                        <form autocomplete="off">
+                            <h4>Add new author</h4>
+                            <input type="text" class="form-control" id="add-author-new">
+
+                            </input>
+                            <button type="button" id="add-author-new-button" class="btn btn-default qty-btn"
+                                    style="margin-top: 10px">
+                                Add to list authors
+                            </button>
                         </form>
                     </td>
+
                 </tr>
+
+                </tbody>
+                <tbody>
+                <ul id="authors-list">
+                    <h4>Selected authors</h4>
+                    <!--<li>hhhd</li>-->
+                    <!--<li>sdg</li>-->
+                    <!--<li>sdgdsg</li>-->
+                    <!--<li>sdgdgdsg</li>-->
+                </ul>
+
                 </tbody>
 
                 <!--Save added books form-->
@@ -172,7 +201,8 @@
                 <h5>Enter book ID to delete it</h5>
                 <div class="btn-group " role="group" aria-label="...">
                     <input type="text" name="book-id" id="delete-book-id" class="delete-item">
-                    <button type="button" id="delete-book-button" class="btn btn-warning delete-item">DELETE BOOK</button>
+                    <button type="button" id="delete-book-button" class="btn btn-warning delete-item">DELETE BOOK
+                    </button>
                 </div>
             </div>
             <!--End of delete book-->
@@ -195,7 +225,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form class="well form-horizontal" action=""  id="contact_form">
+                <form class="well form-horizontal" action="" id="contact_form">
                     <fieldset>
                         <!-- Form Name -->
                         <legend class="text-center">Enter the system</legend>
@@ -204,7 +234,8 @@
                             <div class="col-md-8 inputGroupContainer">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                    <input name="first_name" placeholder="Your login" id="login-username" class="form-control" type="text">
+                                    <input name="first_name" placeholder="Your login" id="login-username"
+                                           class="form-control" type="text">
                                 </div>
                             </div>
                         </div>
@@ -213,7 +244,8 @@
                             <div class="col-md-8 inputGroupContainer">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                    <input name="password" type="password" id="login-password" placeholder="Your password"
+                                    <input name="password" type="password" id="login-password"
+                                           placeholder="Your password"
                                            class="form-control" type="text">
                                 </div>
                             </div>
@@ -246,9 +278,15 @@
 </body>
 <script>
 
-    $(function() {
+    $(function () {
+        // var arr = document.getElementById("authors-list").getElementsByTagName("li");
+        // for(i = 0;i<arr.length;i++){
+        //     console.log(arr[i]);
+        //     console.log(document.getElementById("authors-list").getElementsByTagName();
+        //     console.log($("ul.authors-list li").eq(i).text())
+        // }
 
-        if(localStorage.getItem("A-Token")!= null){
+        if (localStorage.getItem("A-Token") != null) {
             $.ajax({
                 "url": "http://localhost:8080/api/user",
                 'method': 'GET',
@@ -258,18 +296,18 @@
                     'A-Token': localStorage.getItem('A-Token'),
                     'Content-Type': 'application/json;charset=utf-8'
                 },
-                'success': function(response) {
+                'success': function (response) {
                     $('#login-btn').hide();
-                    $('#username').append(""+response.username+"")
+                    $('#username').append("" + response.username + "")
                     $('#username').show();
                     $('#out-btn').show();
                 },
-                'error': function(error) {
+                'error': function (error) {
                     console.log(error);
                     localStorage.removeItem("A-Token");
                 }
             });
-        }else{
+        } else {
             $('#edit-book').hide();
         }
         $.ajax({
@@ -277,13 +315,15 @@
             'type': "GET",
             'contentType': 'application/json',
             'dataType': 'json',
-            'success': function(response) {
+            'success': function (response) {
 
-                for (i = 0;i<response.length;i++) {
-                    $('#authors-select-list').append("<option value='"+response[i].id+"'>"+response[i].fullName+"</option>")
+                for (i = 0; i < response.length; i++) {
+                    $('#authors-select-list').append("<option value='" + response[i].id + "'>" + response[i].fullName + "</option>")
+                    $('#add-author').append("<option value='" + response[i].id + "'>" + response[i].fullName + "</option>")
+
                 }
             },
-            'error': function(error) {
+            'error': function (error) {
                 console.log(error)
             }
         });
@@ -293,29 +333,29 @@
             'type': "GET",
             'contentType': 'application/json',
             'dataType': 'json',
-            'success': function(response) {
+            'success': function (response) {
                 var authors;
-                for (i = 0;i<response.length;i++) {
+                for (i = 0; i < response.length; i++) {
                     authors = "";
-                    for (j = 0;j<response[i].bookAuthor.length;j++){
-                        if(j+1 ==  response[i].bookAuthor.length){
+                    for (j = 0; j < response[i].bookAuthor.length; j++) {
+                        if (j + 1 == response[i].bookAuthor.length) {
                             authors += response[i].bookAuthor[j].fullName;
-                        }else{
-                            authors += response[i].bookAuthor[j].fullName+", ";
+                        } else {
+                            authors += response[i].bookAuthor[j].fullName + ", ";
                         }
 
                     }
-                    $('#books-table').append('<tr><th scope="row">'+response[i].id+'</th><td>'+response[i].bookName+'</td><td>'+response[i].genre+'</td><td>'+authors+'</td></tr>');
+                    $('#books-table').append('<tr><th scope="row">' + response[i].id + '</th><td>' + response[i].bookName + '</td><td>' + response[i].genre + '</td><td>' + authors + '</td></tr>');
                 }
                 $('.badge').append(response.length);
             },
-            'error': function(error) {
+            'error': function (error) {
                 console.log(error)
             }
         });
     });
 
-    $('#login-button').click(function() {
+    $('#login-button').click(function () {
         var username = $('#login-username').val();
         var password = $('#login-password').val();
         var loginRequest = {
@@ -327,42 +367,123 @@
             'type': "POST",
             'contentType': 'application/json',
             'dataType': 'json',
+            'async': false,
             'data': JSON.stringify(loginRequest),
-            'success': function(data) {
+            'success': function (data) {
                 localStorage.setItem(data.key, data.value);
                 document.location.reload();
                 console.log(localStorage.getItem("A-Token"));
             },
-            'error': function(error) {
+            'error': function (error) {
                 console.log(error);
             }
         });
     });
 
-    $('#add-book-save-button').click(function() {
+    var arrayAuthors = [];
+
+    $('#add-author-existing-button').click(function () {
+        var id = $('#add-author').val();
+        var fullName = $('#add-author option:selected').text();
+        arrayAuthors[arrayAuthors.length] = {
+            fullName: fullName,
+            id: id
+        }
+
+        $('#authors-list').empty();
+        for (var i = 0; i < arrayAuthors.length; i++) {
+            $('#authors-list').append("<li>" + arrayAuthors[i].fullName + "</li>");
+            console.log(arrayAuthors[i].fullName);
+            console.log(arrayAuthors);
+        }
+    });
+
+
+    $('#add-book-save-button').click(function () {
+        console.log(arrayAuthors);
 
         var bookName = $('#add-book-name').val();
         var genre = $('#add-book-genre').val();
-        var bookAuthor = $('.add-book-author-name').val();
+        // var bookAuthor = arrayAuthors.toArray();
+
+
 
         var newBook = {
             'bookAuthor': [
-                {
-                    "fullName": bookAuthor,
-                    'id': 0
-                }
+
             ],
             'bookName': bookName,
             'booksAutors': [
-                {
-                    'fullName': ''+bookAuthor+'',
-                    'id': 0
-                }
+
+                //
+                // {
+                //     fullName: "Vadym",
+                //     id: 0
+                // },
+                // {
+                //     fullName: "Igor",
+                //     id: 0
+                // },
+                // {
+                //     fullName: "Igor",
+                //     id: 0
+                // },
+                // {
+                //     fullName: "Igor",
+                //     id: 0
+                // },
+                // {
+                //     fullName: "Igor",
+                //     id: 0
+                // },
+                // {
+                //     fullName: "Igor",
+                //     id: 0
+                // }
             ],
             'genre': genre,
             'id': 0
         };
+        // for (var i = 0; i < arrayAuthors.length; i++) {
+        //     if (arrayAuthors.length > 1) {
+        //         newBook.bookAutor = {
+        //             fullName: "Vadym",
+        //             id: 0
+        //         };
+        //         newBook.booksAutors = {
+        //             fullName: "Vadym",
+        //             id: 0
+        //         };
 
+
+                // newBook.bookAuthor = "" + arrayAuthors[i] + "";
+                // newBook.bookAuthor = "" + arrayAuthors[i] + "";
+                // newBook.booksAutors = "" + arrayAuthors[i] + "";
+                // newBook.booksAutors = "" + arrayAuthors[i] + "";
+            // } else {
+            //     newBook.bookAutor[i] = {
+            //         fullName: "Vadym",
+            //         id: 0
+            //     };
+            //     newBook.booksAutors[i] = {
+            //         fullName: "Vadym",
+            //         id: 0
+            //     };
+            // }
+            // newBook.bookAuthor[i].fullName = "" + arrayAuthors[i].fullName + "";
+            // newBook.bookAuthor[i].id = "" + arrayAuthors[i].id + "";
+            // newBook.booksAutors[i].fullName = "" + arrayAuthors[i].fullName + "";
+            // newBook.booksAutors[i].id = "" + arrayAuthors[i].id + "";
+            // }
+            // console.log(newBook);
+            //
+            // newBook.bookAuthor[i]
+        // }
+
+        for(var i;i<arrayAuthors.length;i++){
+            newBook.bookAuthor.push(arrayAuthors[i]);
+            newBook.booksAutors.push(arrayAuthors[i]);
+        }
 
         $.ajax({
             'url': 'http://localhost:8080/api/private/books',
@@ -370,56 +491,60 @@
             'contentType': 'application/json',
             'dataType': 'json',
             'data': JSON.stringify(newBook),
+            'async':false,
             'headers': {
                 'A-Token': localStorage.getItem('A-Token'),
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            'success': function(response) {
-                document.location.reload();
+            'success': function (response) {
+                // document.location.reload();
             },
-            'error': function(error) {
+            'error': function (error) {
                 console.log(error);
             }
         });
     });
-    $('#quantity-button').click(function() {
+    $('#quantity-button').click(function () {
         $('.badge').empty();
         var id = $('#authors-select-list').val();
         $.ajax({
-            'url': 'http://localhost:8080/api/authors/'+id+'',
+            'url': 'http://localhost:8080/api/authors/' + id + '',
             'type': "GET",
             'contentType': 'application/json',
             'dataType': 'json',
-            'success': function(response) {
+            'success': function (response) {
                 console.log(response);
                 $('.badge').append(JSON.parse(response));
             },
-            'error': function(error) {
+            'error': function (error) {
                 console.log(error);
             }
         });
     });
-    $('#delete-book-button').click(function() {
+    $('#delete-book-button').click(function () {
         var id = $('#delete-book-id').val();
         console.log(id);
         $.ajax({
-            'url': 'http://localhost:8080/api/private/books/'+id+'',
+            'url': 'http://localhost:8080/api/private/books/' + id + '',
             'type': "DELETE",
             'contentType': 'application/json',
             'dataType': 'json',
+            'async': false,
             'headers': {
                 'A-Token': localStorage.getItem('A-Token'),
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            'success': function(response) {
-
+            'success': function (response) {
+                location.reload();
             },
-            'error': function(error) {
+            'error': function (error) {
                 console.log(error);
             }
         });
     });
-    $('#out-btn').click(function() {
+
+
+    $('#out-btn').click(function () {
         localStorage.removeItem("A-Token");
         location.reload();
     });
